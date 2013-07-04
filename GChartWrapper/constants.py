@@ -55,7 +55,7 @@ TTAGSATTRS = ('label','title','color','line','grid','bar','marker','fill','legen
 'encoding','scale','size','type','dataset','img','map','bar_width_spacing',
 'legend_pos','output_encoding','level_data')
 
-APIURL = 'http://chart.apis.google.com/chart?' 
+APIURL = '//chart.googleapis.com/chart?' 
 
 COLOR_MAP = {
     'aliceblue': 'F0F8FF',

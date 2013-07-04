@@ -759,7 +759,7 @@ class TestChartTypes(unittest.TestCase):
         return G
     
     def test_fromstring(self):
-        url='http://chart.apis.google.com/chart?cht=p3&chd=t:60,40&chs=250x100&chl=Hello|World'
+        url='//chart.googleapis.com/chart?cht=p3&chd=t:60,40&chs=250x100&chl=Hello|World'
         self.assertEqual(GChart.fromurl(url).checksum(),'4e53c7add42ce61a933ce106a9854222c54c9147')
 
     def _test_encoding(self, encoding, expected, data, scale):

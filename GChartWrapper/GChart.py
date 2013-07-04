@@ -24,11 +24,11 @@ Example
     >>> G.title('The Zen of Python','00cc00',36)
     >>> G.color('00cc00')
     >>> str(G)
-    'http://chart.apis.google.com/chart?
+    '//chart.googleapis.com/chart?
         chd=e:simpleisbetterthancomplexcomplexisbetterthancomplicated
         &chs=300x150
         &cht=lc
-        &chtt=The+Zen+of+Python'    
+        &chtt=The+Zen+of+Python'
     >>> G.image() # PIL instance
     <PngImagePlugin.PngImageFile instance at ...>
     >>> 1#G.show() # Webbrowser open
@@ -45,7 +45,7 @@ from copy import copy
 def lookup_color(color):
     """
     Returns the hex color for any valid css color name
-    
+
     >>> lookup_color('aliceblue')
     'F0F8FF'
     """
@@ -58,7 +58,7 @@ def lookup_color(color):
 def color_args(args, *indexes):
     """
     Color a list of arguments on particular indexes
-    
+
     >>> c = color_args([None,'blue'], 1)
     >>> c.next()
     None
@@ -78,7 +78,7 @@ class Axes(dict):
 
     Use this class via GChart(...).axes
     Methods are taken one at a time, like so:
-    
+
     >>> G = GChart()
     >>> G.axes.type('xy')
     {}
@@ -89,7 +89,7 @@ class Axes(dict):
     """
     def __repr__(self):
         return '<GChart.Axes %s>' % dict(self.items())
-        
+
     def __init__(self, parent):
         self.parent = parent
         self.data = {'ticks':[],'labels':[],'positions':[],
@@ -104,7 +104,7 @@ class Axes(dict):
         assert int(length) <= 25, 'Width cannot be more than 25'
         self.data['ticks'].append('%s,%d'%(index,length))
         return self.parent
-    
+
     def type(self, atype):
         """
         Define the type of axes you wish to use
@@ -118,7 +118,7 @@ class Axes(dict):
         self['chxt'] = atype
         return self.parent
     __call__ = type
-    
+
     def label(self, index, *args):
         """
         Label each axes one at a time
@@ -129,7 +129,7 @@ class Axes(dict):
             str('%s:|%s'%(index, '|'.join(map(str,args)) )).replace('None','')
         )
         return self.parent
-        
+
     def position(self, index, *args):
         """
         Set the label position of each axis, one at a time
@@ -140,7 +140,7 @@ class Axes(dict):
             str('%s,%s'%(index, ','.join(map(str,args)))).replace('None','')
         )
         return self.parent
-        
+
     def range(self, index, *args):
         """
         Set the range of each axis, one at a time
@@ -150,7 +150,7 @@ class Axes(dict):
         self.data['ranges'].append('%s,%s'%(index,
                                     ','.join(map(smart_str, args))))
         return self.parent
-        
+
     def style(self, index, *args):
         """
         Add style to your axis, one at a time
@@ -175,8 +175,8 @@ class Axes(dict):
                 self['chxtc'] = '|'.join(values)
             else:
                 self['chx%s'%opt[0]] = '|'.join(values)
-        return self    
-        
+        return self
+
 class GChart(dict):
     """Main chart class
 
@@ -198,13 +198,13 @@ class GChart(dict):
             assert k in APIPARAMS, 'Invalid chart parameter: %s' % k
         self.update(kwargs)
         self.axes = Axes(self)
-    
+
     @classmethod
     def fromurl(cls, qs):
         """
         Reverse a chart URL or dict into a GChart instance
-        
-        >>> G = GChart.fromurl('http://chart.apis.google.com/chart?...')
+
+        >>> G = GChart.fromurl('http://chart.googleapis.com/chart?...')
         >>> G
         <GChartWrapper.GChart instance at...>
         >>> G.image().save('chart.jpg','JPEG')
@@ -212,7 +212,7 @@ class GChart(dict):
         if isinstance(qs, dict):
             return cls(**qs)
         return cls(**dict(parse_qsl(qs[qs.index('?')+1:])))
-        
+
     ###################
     # Callables
     ###################
@@ -228,7 +228,7 @@ class GChart(dict):
         self._geo = geo
         self._ld = country_codes
         return self
-        
+
     def level_data(self, *args):
         """
         Just used in QRCode for the moment
@@ -238,7 +238,7 @@ class GChart(dict):
         assert args[0].lower() in 'lmqh', 'Unknown EC level %s'%level
         self['chld'] = '%s|%s'%args
         return self
-        
+
     def bar(self, *args):
         """
         For bar charts, specify bar thickness and spacing with the args
@@ -248,7 +248,7 @@ class GChart(dict):
         """
         self['chbh'] = ','.join(map(str,args))
         return self
-        
+
     def encoding(self, arg):
         """
         Specifies the encoding to be used for the Encoder
@@ -256,7 +256,7 @@ class GChart(dict):
         """
         self._encoding = arg
         return self
-        
+
     def output_encoding(self, encoding):
         """
         Output encoding to use for QRCode encoding
@@ -267,7 +267,7 @@ class GChart(dict):
             'Unknown encoding %s'%encoding
         self['choe'] = encoding
         return self
-        
+
     def scale(self, *args):
         """
         Scales the data down to the given size
@@ -281,7 +281,7 @@ class GChart(dict):
         """
         self._scale =  [','.join(map(smart_str, args))]
         return self
-        
+
     def dataset(self, data, series=''):
         """
         Update the chart's dataset, can be two dimensional or contain string data
@@ -289,7 +289,7 @@ class GChart(dict):
         self._dataset = data
         self._series = series
         return self
-        
+
     def marker(self, *args):
         """
         Defines markers one at a time for your graph
@@ -309,7 +309,7 @@ class GChart(dict):
         args = color_args(args, 1)
         self.markers.append(','.join(map(str,args)) )
         return self
-        
+
     def margin(self, left, right, top, bottom, lwidth=0, lheight=0):
         """
         Set margins for chart area
@@ -320,14 +320,14 @@ class GChart(dict):
             <bottom margin>|
             <legend width>,
             <legend height>
-        
+
         APIPARAM: chma
         """
         self['chma'] = '%d,%d,%d,%d'  % (left, right, top, bottom)
         if lwidth or lheight:
             self['chma'] += '|%d,%d' % (lwidth, lheight)
         return self
-    
+
     def line(self, *args):
         """
         Called one at a time for each dataset
@@ -339,7 +339,7 @@ class GChart(dict):
         """
         self.lines.append(','.join(['%.1f'%x for x in map(float,args)]))
         return self
-        
+
     def fill(self, *args):
         """
         Apply a solid fill to your chart
@@ -358,7 +358,7 @@ class GChart(dict):
             args = color_args(args, 3,5)
         self.fills.append(','.join(map(str,args)))
         return self
-        
+
     def grid(self, *args):
         """
         Apply a grid to your chart
@@ -374,7 +374,7 @@ class GChart(dict):
         grids =  map(str,map(float,args))
         self['chg'] = ','.join(grids).replace('None','')
         return self
-        
+
     def color(self, *args):
         """
         Add a color for each dataset
@@ -384,7 +384,7 @@ class GChart(dict):
         args = color_args(args, *range(len(args)))
         self['chco'] = ','.join(args)
         return self
-        
+
     def type(self, type):
         """
         Set the chart type, either Google API type or regular name
@@ -392,7 +392,7 @@ class GChart(dict):
         """
         self['cht'] = self.check_type(str(type))
         return self
-        
+
     def label(self, *args):
         """
         Add a simple label to your chart
@@ -404,7 +404,7 @@ class GChart(dict):
         else:
             self['chl'] = '|'.join(map(str,args))
         return self
-        
+
     def legend(self, *args):
         """
         Add a legend to your chart
@@ -413,7 +413,7 @@ class GChart(dict):
         """
         self['chdl'] = '|'.join(args)
         return self
-        
+
     def legend_pos(self, pos):
         """
         Define a position for your legend to occupy
@@ -422,7 +422,7 @@ class GChart(dict):
         assert pos in LEGEND_POSITIONS, 'Unknown legend position: %s'%pos
         self['chdlp'] = str(pos)
         return self
-        
+
     def title(self, title, *args):
         """
         Add a title to your chart
@@ -447,7 +447,7 @@ class GChart(dict):
         self.check_size(x,y)
         self['chs'] = '%dx%d'%(x,y)
         return self
-   
+
     def orientation(self, angle):
         """
         Set the chart dataset orientation
@@ -457,7 +457,7 @@ class GChart(dict):
         self['chp'] = '%f'%angle
         return self
     position = orientation
-    
+
     def render(self):
         """
         Renders the chart context and axes into the dict data
@@ -500,7 +500,7 @@ class GChart(dict):
         assert x <= 1000, 'Width larger than 1,000'
         assert y <= 1000, 'Height larger than 1,000'
         assert x*y <= 300000, 'Resolution larger than 300,000'
-        
+
     def check_type(self, type):
         """Check to see if the type is either in TYPES or fits type name
 
@@ -523,7 +523,7 @@ class GChart(dict):
 
     #####################
     # Convience Functions
-    #####################     
+    #####################
     def getname(self):
         """
         Gets the name of the chart, if it exists
@@ -542,16 +542,16 @@ class GChart(dict):
 
     def __str__(self):
         return self.url
-    
+
     def __repr__(self):
         return '<GChart.%s %s>'%(self.__class__.__name__, dict(self.items()))
-    
+
     @property
     def url(self):
         """
         Returns the rendered URL of the chart
         """
-        self.render()        
+        self.render()
         return self._apiurl + '&'.join(self._parts()).replace(' ','+')
 
 
@@ -582,12 +582,12 @@ class GChart(dict):
         return fname
 
     def img(self, **kwargs):
-        """ 
+        """
         Returns an XHTML <img/> tag of the chart
 
         kwargs can be other img tag attributes, which are strictly enforced
         uses strict escaping on the url, necessary for proper XHTML
-        """       
+        """
         safe = 'src="%s" ' % self.url.replace('&','&amp;').replace('<', '&lt;')\
             .replace('>', '&gt;').replace('"', '&quot;').replace( "'", '&#39;')
         for item in kwargs.items():
@@ -659,7 +659,7 @@ class QRCode(GChart):
         else:
             kwargs['chl'] = content[0]
         GChart.__init__(self, 'qr', None, **kwargs)
-        
+
 class _AbstractGChart(GChart):
     o,t = {},None
     def __init__(self, dataset, **kwargs):
@@ -668,21 +668,21 @@ class _AbstractGChart(GChart):
 
 
 class Meter(_AbstractGChart):   o,t = {'encoding':'text'},'gom'
-class Line(_AbstractGChart):     t = 'lc' 
-class LineXY(_AbstractGChart):     t = 'lxy' 
-class HorizontalBarStack(_AbstractGChart):     t = 'bhs' 
-class VerticalBarStack(_AbstractGChart):     t = 'bvs' 
-class HorizontalBarGroup(_AbstractGChart):     t = 'bhg' 
-class VerticalBarGroup(_AbstractGChart):     t = 'bvg' 
-class Pie(_AbstractGChart):     t = 'p' 
-class Pie3D(_AbstractGChart):     t = 'p3' 
-class Venn(_AbstractGChart):     t = 'v' 
-class Scatter(_AbstractGChart):     t = 's' 
-class Sparkline(_AbstractGChart):     t = 'ls' 
-class Radar(_AbstractGChart):     t = 'r' 
-class RadarSpline(_AbstractGChart):     t = 'rs' 
-class Map(_AbstractGChart):     t = 't' 
-class PieC(_AbstractGChart):     t = 'pc' 
+class Line(_AbstractGChart):     t = 'lc'
+class LineXY(_AbstractGChart):     t = 'lxy'
+class HorizontalBarStack(_AbstractGChart):     t = 'bhs'
+class VerticalBarStack(_AbstractGChart):     t = 'bvs'
+class HorizontalBarGroup(_AbstractGChart):     t = 'bhg'
+class VerticalBarGroup(_AbstractGChart):     t = 'bvg'
+class Pie(_AbstractGChart):     t = 'p'
+class Pie3D(_AbstractGChart):     t = 'p3'
+class Venn(_AbstractGChart):     t = 'v'
+class Scatter(_AbstractGChart):     t = 's'
+class Sparkline(_AbstractGChart):     t = 'ls'
+class Radar(_AbstractGChart):     t = 'r'
+class RadarSpline(_AbstractGChart):     t = 'rs'
+class Map(_AbstractGChart):     t = 't'
+class PieC(_AbstractGChart):     t = 'pc'
 
 ########################################
 # Now for something completely different
@@ -712,12 +712,12 @@ class Pin(GChart):
             args = list(color_args(args, 2,3,4))
             assert args[0] in PIN_SHAPES, 'Invalid pin shape'
             if not args[0].startswith('pin_'):
-                args[0] = 'pin_%s'%args[0] 
+                args[0] = 'pin_%s'%args[0]
         elif ptype == 'xpin_icon':
             args = list(color_args(args, 2,3))
             assert args[0] in PIN_SHAPES, 'Invalid pin shape'
             if not args[0].startswith('pin_'):
-                args[0] = 'pin_%s'%args[0] 
+                args[0] = 'pin_%s'%args[0]
             assert args[1] in PIN_ICONS, 'Invalid icon name'
         elif ptype == 'spin':
             args = color_args(args, 2)
