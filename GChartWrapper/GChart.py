@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 ################################################################################
 #  GChartWrapper - v0.8
@@ -126,7 +127,7 @@ class Axes(dict):
         APIPARAM: chxl
         """
         self.data['labels'].append(
-            str('%s:|%s'%(index, '|'.join(map(str,args)) )).replace('None','')
+            unicode('%s:|%s'%(index, '|'.join(map(unicode,args)) )).replace('None','')
         )
         return self.parent
 
@@ -137,7 +138,7 @@ class Axes(dict):
         APIPARAM: chxp
         """
         self.data['positions'].append(
-            str('%s,%s'%(index, ','.join(map(str,args)))).replace('None','')
+            unicode('%s,%s'%(index, ','.join(map(unicode,args)))).replace('None','')
         )
         return self.parent
 
@@ -164,7 +165,7 @@ class Axes(dict):
         """
         args = color_args(args, 0)
         self.data['styles'].append(
-            ','.join([str(index)]+list(map(str,args)))
+            ','.join([unicode(index)]+list(map(unicode,args)))
         )
         return self.parent
 
@@ -246,7 +247,7 @@ class GChart(dict):
         bar width can be relative or absolute, see the official doc
         APIPARAM: chbh
         """
-        self['chbh'] = ','.join(map(str,args))
+        self['chbh'] = ','.join(map(unicode,args))
         return self
 
     def encoding(self, arg):
@@ -305,9 +306,9 @@ class GChart(dict):
         """
         if len(args[0]) == 1:
             assert args[0] in MARKERS, 'Invalid marker type: %s'%args[0]
-        assert len(args) <= 6, 'Incorrect arguments %s'%str(args)
+        assert len(args) <= 6, 'Incorrect arguments %s'%unicode(args)
         args = color_args(args, 1)
-        self.markers.append(','.join(map(str,args)) )
+        self.markers.append(','.join(map(unicode,args)) )
         return self
 
     def margin(self, left, right, top, bottom, lwidth=0, lheight=0):
@@ -356,7 +357,7 @@ class GChart(dict):
             args = color_args(args, 2)
         else:
             args = color_args(args, 3,5)
-        self.fills.append(','.join(map(str,args)))
+        self.fills.append(','.join(map(unicode,args)))
         return self
 
     def grid(self, *args):
@@ -371,7 +372,7 @@ class GChart(dict):
             <y offset>
         APIPARAM: chg
         """
-        grids =  map(str,map(float,args))
+        grids =  map(unicode,map(float,args))
         self['chg'] = ','.join(grids).replace('None','')
         return self
 
@@ -390,7 +391,7 @@ class GChart(dict):
         Set the chart type, either Google API type or regular name
         APIPARAM: cht
         """
-        self['cht'] = self.check_type(str(type))
+        self['cht'] = self.check_type(unicode(type))
         return self
 
     def label(self, *args):
@@ -400,9 +401,9 @@ class GChart(dict):
         APIPARAM: chl
         """
         if self['cht'] == 'qr':
-            self['chl'] = ''.join(map(str,args))
+            self['chl'] = ''.join(map(unicode,args))
         else:
-            self['chl'] = '|'.join(map(str,args))
+            self['chl'] = '|'.join(map(unicode,args))
         return self
 
     def legend(self, *args):
@@ -420,7 +421,7 @@ class GChart(dict):
         APIPARAM: chdlp
         """
         assert pos in LEGEND_POSITIONS, 'Unknown legend position: %s'%pos
-        self['chdlp'] = str(pos)
+        self['chdlp'] = unicode(pos)
         return self
 
     def title(self, title, *args):
@@ -432,7 +433,7 @@ class GChart(dict):
         self['chtt'] = title
         if args:
             args = color_args(args, 0)
-            self['chts'] = ','.join(map(str,args))
+            self['chts'] = ','.join(map(unicode,args))
         return self
 
     def size(self,*args):
@@ -562,7 +563,7 @@ class GChart(dict):
         Other arguments passed to webbrowser.open
         """
         from webbrowser import open as webopen
-        return webopen(str(self), *args, **kwargs)
+        return webopen(unicode(self), *args, **kwargs)
 
     def save(self, fname=None):
         """
@@ -600,7 +601,7 @@ class GChart(dict):
         """
         Grabs readable PNG file pointer
         """
-        req = Request(str(self))
+        req = Request(unicode(self))
         try:
             return urlopen(req)
         except HTTPError:
@@ -654,7 +655,7 @@ class GChart(dict):
 class QRCode(GChart):
     def __init__(self, content='', **kwargs):
         kwargs['choe'] = 'UTF-8'
-        if isinstance(content, str):
+        if isinstance(content, basestring):
             kwargs['chl'] = content
         else:
             kwargs['chl'] = content[0]
@@ -692,7 +693,7 @@ class Text(GChart):
     def __init__(self, *args):
         GChart.__init__(self)
         self['chst'] = 'd_text_outline'
-        args = list(map(str, color_args(args, 0, 3)))
+        args = list(map(unicode, color_args(args, 0, 3)))
         assert args[2] in 'lrh', 'Invalid text alignment'
         assert args[4] in '_b', 'Invalid font style'
         self['chld'] = '|'.join(args).replace('\r\n','|')\
@@ -722,7 +723,7 @@ class Pin(GChart):
         elif ptype == 'spin':
             args = color_args(args, 2)
         self['chst'] = 'd_map_%s'%ptype
-        self['chld'] = '|'.join(map(str, args)).replace('\r\n','|')\
+        self['chld'] = '|'.join(map(unicode, args)).replace('\r\n','|')\
             .replace('\r','|').replace('\n','|')
     def shadow(self):
         image = copy(self)
@@ -744,7 +745,7 @@ class Note(GChart):
             self['chst'] = 'd_%s'%args[0]
             assert args[2] in NOTE_WEATHERS,'Invalid weather'
         args = args[1:]
-        self['chld'] = '|'.join(map(str, args)).replace('\r\n','|')\
+        self['chld'] = '|'.join(map(unicode, args)).replace('\r\n','|')\
             .replace('\r','|').replace('\n','|')
 
 class Bubble(GChart):
@@ -761,7 +762,7 @@ class Bubble(GChart):
         elif btype == 'texts_big':
             args = color_args(args, 1,2)
         self['chst'] = 'd_bubble_%s'%btype
-        self['chld'] = '|'.join(map(str, args)).replace('\r\n','|')\
+        self['chld'] = '|'.join(map(unicode, args)).replace('\r\n','|')\
             .replace('\r','|').replace('\n','|')
     def shadow(self):
         image = copy(self)
